@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Custom (migrado del prototipo) ---------- */
+body { touch-action: none; overscroll-behavior: none; }
+button, a, input, textarea, label { touch-action: manipulation; }
+.interactive-element { touch-action: auto; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+#connections-layer {
+    position: absolute; top: 0; left: 0;
+    width: 8000px; height: 8000px;
+    overflow: visible; pointer-events: none;
+}
+#drawing-layer {
+    position: absolute; top: 0; left: 0;
+    width: 8000px; height: 8000px;
+    overflow: visible; pointer-events: none; z-index: 100;
+}
+
+#canvas-container.draw-mode { cursor: crosshair !important; }
+#canvas-container.draw-mode .interactive-element { pointer-events: none; }
+#canvas-container.draw-mode .conn-dot { pointer-events: none !important; }
+#canvas-container.draw-mode #drawing-layer path,
+#canvas-container.draw-mode #connections-layer path {
+    pointer-events: none !important;
+}
+
+#pen-btn.pen-active { background-color: #7c3aed; color: #fff; }
+#pen-btn.pen-active i { color: #fff !important; }
+button:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+
+.interactive-element.selected { outline: 2px solid #8b5cf6; outline-offset: 2px; }
+
+.conn-dot {
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.interactive-element.selected .conn-dot,
+.interactive-element.edge-dragging-active .conn-dot {
+    display: flex;
+}
+.conn-dot > .dot-inner {
+    width: 9px; height: 9px; background: #7c3aed; border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.9);
+    opacity: 0.45; transition: opacity 0.15s, transform 0.15s; pointer-events: none;
+}
+.conn-dot:hover > .dot-inner,
+.conn-dot.dot-active > .dot-inner { opacity: 1; transform: scale(1.35); }
+.dark .conn-dot > .dot-inner { box-shadow: 0 0 0 2px rgba(9,9,11,0.9); }
+@media (pointer: coarse) { .conn-dot > .dot-inner { opacity: 0.65; } }
+
+.palette-indicator { display: none; }
+.interactive-element.selected .palette-indicator { display: flex; }
+.palette-indicator { transition: transform 0.15s; }
+.palette-indicator:hover { transform: scale(1.15); }
+
+.img-delete-btn { display: none; }
+.interactive-element.selected .img-delete-btn { display: flex; }
+
+.resize-handle { display: none; align-items: center; justify-content: center; }
+.interactive-element.selected .resize-handle { display: flex; }
+
+.elem-delete-btn { display: none; align-items: center; justify-content: center; }
+.interactive-element.selected .elem-delete-btn { display: flex; }
+
+.shape-btn.shape-active { background-color: #7c3aed; color: #fff; }
+.shape-btn.shape-active i { color: #fff !important; }
