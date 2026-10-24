@@ -20,5 +20,6 @@ description: Publicar o verificar el despliegue de PurpleBoard en GitHub Pages. 
 ## Verificación
 * `https://<user>.github.io/<repo>/` responde 200 y carga sin 404 en consola.
 * Rutas verificadas relativas: `css/styles.css`, `js/app.js`,
-  `vendor/peerjs.min.js`, `webfonts/*.woff2` (resuelven bajo el subpath del repo).
+  `vendor/peerjs.min.js`, `webfonts/*.woff2`, `static/corazon.svg` (favicon)
+  (resuelven bajo el subpath del repo).
 * Crear sala y unirse desde otra pestaña/navegador para validar el P2P.
