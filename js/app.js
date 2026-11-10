@@ -1,5 +1,5 @@
 'use strict';
-/* Purple Board — pizarra colaborativa P2P
+/* PurplePlan — pizarra colaborativa P2P
    SPDX-License-Identifier: AGPL-3.0-or-later */
 
 // ---------- SEGURIDAD ----------
@@ -1327,7 +1327,7 @@ function copyShareLink() {
 }
 function nativeShare() {
     navigator.share({
-        title: 'Purple Board',
+        title: 'PurplePlan',
         text: 'Unite a mi pizarra con este ID: ' + currentRoomId,
         url: inviteUrl()
     }).catch(() => { /* el usuario canceló */ });
