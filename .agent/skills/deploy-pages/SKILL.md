@@ -1,6 +1,6 @@
 ---
 name: deploy-pages
-description: Publicar o verificar el despliegue de PurpleBoard en GitHub Pages. NO invocar para cambios locales que aún no van a producción ni para gestionar salas o señalización.
+description: Publicar o verificar el despliegue de PurplePlan en GitHub Pages. NO invocar para cambios locales que aún no van a producción ni para gestionar salas o señalización.
 ---
 
 # Deploy a GitHub Pages

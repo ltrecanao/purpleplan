@@ -1180,7 +1180,7 @@ function resetBoard(state) {
 }
 
 // ---------- AUTOSAVE (localStorage) ----------
-const STORAGE_KEY = 'purpleboard_state_v1';
+const STORAGE_KEY = 'purpleplan_state_v1';
 let saveTimer = null;
 let quotaWarned = false;
 

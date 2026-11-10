@@ -1,4 +1,4 @@
-# PurpleBoard
+# PurplePlan
 
 Pizarra colaborativa P2P: post-its, imágenes, conexiones con flechas, dibujo
 libre y llamadas de voz, todo con **archivos estáticos** sin framework ni
@@ -10,7 +10,7 @@ Licencia: **AGPL-3.0** (ver [LICENSE](LICENSE)).
 ## Estructura
 
 ```
-purpleboard/
+purpleplan/
 ├── index.html            # UI (única página)
 ├── js/app.js             # Toda la lógica (canvas, sync, voz, autosave)
 ├── css/

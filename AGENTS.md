@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Propósito del repositorio
-PurpleBoard: pizarra colaborativa P2P (post-its, imágenes, formas, dibujo y
+PurplePlan: pizarra colaborativa P2P (post-its, imágenes, formas, dibujo y
 voz) como sitio web 100% estático. Sin framework, sin backend, sin build en
 runtime: HTML + vanilla JS + Tailwind precompilado, listo para GitHub Pages.
 Detalles de decisión en `docs/proposals/`.

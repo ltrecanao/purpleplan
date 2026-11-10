@@ -1,4 +1,4 @@
-# ADR 0001: Arquitectura estática y P2P para PurpleBoard
+# ADR 0001: Arquitectura estática y P2P para PurplePlan
 
 * **Estado:** Propuesta
 * **Fecha:** 2026-10-23
@@ -6,7 +6,7 @@
 
 ## Contexto
 
-PurpleBoard nació como prototipo monolítico `PurpleBoard.html` y necesitaba
+PurplePlan nació como prototipo monolítico `PurplePlan.html` y necesitaba
 producción con presupuesto cero. Un backend (WebSocket, persistencia de
 salas, cuentas) sumaría costo operativo y de mantenimiento desproporcionado
 para el uso actual: sesiones de colaboración ad-hoc compartiendo un ID.
