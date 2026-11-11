@@ -69,3 +69,17 @@ button:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
 
 .shape-btn.shape-active { background-color: #7c3aed; color: #fff; }
 .shape-btn.shape-active i { color: #fff !important; }
+
+/* ---------- Paleta de post-its ---------- */
+.sticky-purple { background-color:#ede9fe; border-color:#c4b5fd; color:#4c1d95; }
+.sticky-green  { background-color:#d1fae5; border-color:#6ee7b7; color:#064e3b; }
+.sticky-orange { background-color:#ffedd5; border-color:#fdba74; color:#7c2d12; }
+.sticky-red    { background-color:#fee2e2; border-color:#fca5a5; color:#7f1d1d; }
+.sticky-blue   { background-color:#dbeafe; border-color:#93c5fd; color:#1e3a8a; }
+.sticky-yellow { background-color:#fef9c3; border-color:#fde047; color:#713f12; }
+.dark .sticky-purple { background-color:rgba(46,16,101,.9); border-color:#5b21b6; color:#ddd6fe; }
+.dark .sticky-green  { background-color:rgba(2,44,34,.9);   border-color:#065f46; color:#a7f3d0; }
+.dark .sticky-orange { background-color:rgba(67,20,7,.9);   border-color:#9a3412; color:#fed7aa; }
+.dark .sticky-red    { background-color:rgba(69,10,10,.9);  border-color:#991b1b; color:#fecaca; }
+.dark .sticky-blue   { background-color:rgba(23,37,84,.9);  border-color:#1e40af; color:#bfdbfe; }
+.dark .sticky-yellow { background-color:rgba(66,32,6,.9);   border-color:#854d0e; color:#fef08a; }

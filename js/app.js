@@ -22,33 +22,42 @@ function safeUrl(u) {
 }
 
 // ---------- PALETAS ----------
+// Las clases .sticky-* viven en src/styles.css (CSS propio, no depende del purgado de Tailwind).
 const STICKY_PALETTES = {
-    purple:  'bg-purple-100 dark:bg-purple-950/90 border-purple-300 dark:border-purple-800 text-purple-900 dark:text-purple-200',
-    violet:  'bg-violet-100 dark:bg-violet-950/90 border-violet-300 dark:border-violet-800 text-violet-900 dark:text-violet-200',
-    pink:    'bg-pink-100 dark:bg-pink-950/90 border-pink-300 dark:border-pink-800 text-pink-900 dark:text-pink-200',
-    amber:   'bg-amber-100 dark:bg-amber-950/90 border-amber-300 dark:border-amber-800 text-amber-900 dark:text-amber-200',
-    emerald: 'bg-emerald-100 dark:bg-emerald-950/90 border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200',
-    sky:     'bg-sky-100 dark:bg-sky-950/90 border-sky-300 dark:border-sky-800 text-sky-900 dark:text-sky-200',
-    slate:   'bg-slate-100 dark:bg-zinc-900 border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-zinc-100'
+    purple: 'sticky-purple',
+    green:  'sticky-green',
+    orange: 'sticky-orange',
+    red:    'sticky-red',
+    blue:   'sticky-blue',
+    yellow: 'sticky-yellow'
 };
 const PALETTE_DOT_COLORS = {
-    purple: '#8b5cf6', violet: '#a855f7', pink: '#ec4899',
-    amber: '#f59e0b', emerald: '#10b981', sky: '#0ea5e9', slate: '#64748b'
+    purple: '#8b5cf6', green: '#10b981', orange: '#f97316',
+    red: '#ef4444', blue: '#3b82f6', yellow: '#eab308'
 };
 const PALETTE_KEYS = Object.keys(STICKY_PALETTES);
 const ALL_PALETTE_CLASSES = PALETTE_KEYS
     .flatMap(k => STICKY_PALETTES[k].split(/\s+/))
     .filter(Boolean);
 
+// Paleta anterior -> nueva: tableros guardados y peers con una versión vieja.
+const LEGACY_COLOR_KEYS = {
+    violet: 'purple', slate: 'purple', pink: 'red',
+    amber: 'yellow', emerald: 'green', sky: 'blue'
+};
+function normalizeColorKey(key) {
+    if (PALETTE_KEYS.includes(key)) return key;
+    return Object.prototype.hasOwnProperty.call(LEGACY_COLOR_KEYS, key) ? LEGACY_COLOR_KEYS[key] : null;
+}
 function inferColorKey(item) {
-    if (item.colorKey && STICKY_PALETTES[item.colorKey]) return item.colorKey;
-    const c = (item.color || '').toLowerCase();
-    if (c.includes('violet')) return 'violet';
-    if (c.includes('pink')) return 'pink';
-    if (c.includes('amber') || c.includes('yellow')) return 'amber';
-    if (c.includes('emerald') || c.includes('green')) return 'emerald';
-    if (c.includes('sky') || c.includes('blue')) return 'sky';
-    if (c.includes('slate') || c.includes('zinc') || c.includes('gray')) return 'slate';
+    const known = normalizeColorKey(item.colorKey);
+    if (known) return known;
+    const c = (typeof item.color === 'string' ? item.color : '').toLowerCase();
+    if (c.includes('pink') || c.includes('red') || c.includes('rose')) return 'red';
+    if (c.includes('orange')) return 'orange';
+    if (c.includes('amber') || c.includes('yellow')) return 'yellow';
+    if (c.includes('emerald') || c.includes('green')) return 'green';
+    if (c.includes('sky') || c.includes('blue')) return 'blue';
     return 'purple';
 }
 
@@ -72,7 +81,7 @@ function sanitizeElement(raw) {
         x: finiteOr(raw.x, 0, -WORLD_SIZE, WORLD_SIZE),
         y: finiteOr(raw.y, 0, -WORLD_SIZE, WORLD_SIZE),
         content: typeof raw.content === 'string' ? raw.content.slice(0, 20000) : '',
-        colorKey: PALETTE_KEYS.includes(raw.colorKey) ? raw.colorKey : inferColorKey({ color: raw.color }),
+        colorKey: inferColorKey(raw),
         imgUrl: typeof raw.imgUrl === 'string' ? raw.imgUrl : '',
         w: raw.w == null ? null : finiteOr(raw.w, null, 20, 4000),
         h: raw.h == null ? null : finiteOr(raw.h, null, 20, 4000)
@@ -1512,7 +1521,8 @@ function handleRemoteMessage(msg, conn) {
         }
     } else if (msg.type === 'changeColor') {
         const el = elements.find(e => e.id === msg.id);
-        if (el) { el.colorKey = msg.colorKey; applyColorToElement(el); }
+        const key = normalizeColorKey(msg.colorKey);
+        if (el && key) { el.colorKey = key; applyColorToElement(el); }
     } else if (msg.type === 'deleteElement') {
         localDeleteElement(msg.id);
     } else if (msg.type === 'addStroke') {
