@@ -671,7 +671,7 @@ function addElement(type, data = null) {
     const item = {
         id, type,
         x: data?.x ?? (worldCenterX - 110),
-        y: data?.y ?? (worldCenterY - 80),
+        y: data?.y ?? (worldCenterY - (type === 'sticky' ? 110 : 80)),
         content: data?.content || (type === 'sticky' ? 'Nota rápida...' : type === 'label' ? 'Etiqueta de texto' : ''),
         colorKey: data?.colorKey || 'purple',
         imgUrl: data?.imgUrl || '',
@@ -722,6 +722,13 @@ function renderElement(item) {
     } else {
         div.className = `absolute group cursor-move select-none p-3 rounded-2xl shadow-xl border backdrop-blur-md interactive-element ${colorClass}`;
         div.style.width = `${item.w || 220}px`;
+        if (item.type === 'sticky') {
+            // Cuadrado por defecto (alto mínimo = ancho); el texto va centrado en ambos ejes.
+            div.style.minHeight = `${item.h || item.w || 220}px`;
+            div.style.display = 'flex';
+            div.style.flexDirection = 'column';
+            div.style.justifyContent = 'center';
+        }
     }
     div.style.left = `${item.x}px`;
     div.style.top = `${item.y}px`;
@@ -729,7 +736,7 @@ function renderElement(item) {
     let innerHTML = '';
 
     if (item.type === 'sticky') {
-        innerHTML += `<textarea oninput="updateContent('${item.id}', this.value)" class="w-full bg-transparent resize-none focus:outline-none text-xs interactive-element">${esc(item.content)}</textarea>`;
+        innerHTML += `<textarea rows="1" style="text-align:center" oninput="updateContent('${item.id}', this.value)" class="w-full bg-transparent resize-none focus:outline-none text-xs interactive-element">${esc(item.content)}</textarea>`;
     } else if (item.type === 'label') {
         innerHTML += `<input type="text" value="${esc(item.content)}" oninput="updateContent('${item.id}', this.value)" class="w-full bg-transparent focus:outline-none text-xs font-bold interactive-element">`;
     } else if (item.type === 'link') {
@@ -829,6 +836,8 @@ function renderElement(item) {
     }
 
     content.appendChild(div);
+    // scrollHeight vale 0 con el nodo fuera del DOM: reajustar ya insertado.
+    if (item.type === 'sticky') fitTextarea(item, div.querySelector('textarea'));
     resizeObserver.observe(div);
 }
 
@@ -993,8 +1002,7 @@ function fitTextarea(item, ta) {
     if (!ta) return;
     ta.style.height = 'auto';
     const needed = ta.scrollHeight + 2; // margen anti-clip por redondeo
-    const manual = item.h || 0;
-    ta.style.height = Math.max(needed, manual, 40) + 'px';
+    ta.style.height = needed + 'px';
     redrawEdgesFor(item.id);
 }
 
@@ -1013,6 +1021,7 @@ function makeResizable(element, item) {
         if (inner) { inner.style.width = item.w + 'px'; inner.style.maxWidth = 'none'; inner.style.maxHeight = 'none'; }
         if (isSticky) {
             if (h != null) item.h = Math.round(Math.max(40, h));
+            element.style.minHeight = (item.h || item.w) + 'px';
             fitTextarea(item, element.querySelector('textarea'));
         }
         broadcast({ type: 'resizeElement', id: item.id, w: item.w, h: item.h ?? null });
@@ -1496,6 +1505,7 @@ function handleRemoteMessage(msg, conn) {
                     const img = dom.querySelector('img');
                     if (img) { img.style.width = el.w + 'px'; img.style.maxWidth = 'none'; img.style.maxHeight = 'none'; }
                 } else if (el.type === 'sticky') {
+                    dom.style.minHeight = (el.h || el.w) + 'px';
                     fitTextarea(el, dom.querySelector('textarea'));
                 }
             }
