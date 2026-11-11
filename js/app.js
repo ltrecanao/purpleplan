@@ -52,6 +52,33 @@ function inferColorKey(item) {
     return 'purple';
 }
 
+// Normaliza un elemento venido de la red, de un JSON importado o del autosave.
+// Devuelve un objeto nuevo y seguro, o null si no es válido. El id y los números
+// terminan dentro de atributos HTML (onclick, style), así que se validan acá.
+const ELEMENT_TYPES = ['sticky', 'label', 'link', 'image'];
+const WORLD_SIZE = 8000;
+function finiteOr(v, fallback, min, max) {
+    const n = typeof v === 'number' ? v : Number(v);
+    if (!Number.isFinite(n)) return fallback;
+    return Math.min(max, Math.max(min, n));
+}
+function sanitizeElement(raw) {
+    if (!raw || typeof raw !== 'object') return null;
+    if (typeof raw.id !== 'string' || !/^[A-Za-z0-9_-]{1,64}$/.test(raw.id)) return null;
+    if (!ELEMENT_TYPES.includes(raw.type)) return null;
+    return {
+        id: raw.id,
+        type: raw.type,
+        x: finiteOr(raw.x, 0, -WORLD_SIZE, WORLD_SIZE),
+        y: finiteOr(raw.y, 0, -WORLD_SIZE, WORLD_SIZE),
+        content: typeof raw.content === 'string' ? raw.content.slice(0, 20000) : '',
+        colorKey: PALETTE_KEYS.includes(raw.colorKey) ? raw.colorKey : inferColorKey({ color: raw.color }),
+        imgUrl: typeof raw.imgUrl === 'string' ? raw.imgUrl : '',
+        w: raw.w == null ? null : finiteOr(raw.w, null, 20, 4000),
+        h: raw.h == null ? null : finiteOr(raw.h, null, 20, 4000)
+    };
+}
+
 // ---------- ESTADO ----------
 let elements = [];
 let strokes = [];
@@ -658,9 +685,9 @@ function addElement(type, data = null) {
         redo: () => { localAddElement(item); broadcast({ type: 'createElement', data: item }); }
     });
 }
-function localAddElement(item) {
-    if (elements.some(e => e.id === item.id)) return;
-    if (!item.colorKey) item.colorKey = inferColorKey(item);
+function localAddElement(raw) {
+    const item = sanitizeElement(raw);
+    if (!item || elements.some(e => e.id === item.id)) return;
     elements.push(item);
     renderElement(item);
 }
