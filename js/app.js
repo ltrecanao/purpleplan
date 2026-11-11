@@ -1452,7 +1452,7 @@ function setupConnection(conn, outbound) {
         // Quien se une pide el estado actual de la sala; el anfitrión lo envía.
         if (outbound) conn.send({ type: 'requestSync' });
     });
-    conn.on('data', (msg) => handleRemoteMessage(msg));
+    conn.on('data', (msg) => handleRemoteMessage(msg, conn));
     conn.on('close', () => {
         p2pConnections = p2pConnections.filter(c => c !== conn);
         const calls = peer?.connections?.[conn.peer] || [];
@@ -1464,7 +1464,8 @@ function broadcast(msg) {
     p2pConnections.forEach(c => { if (c.open) c.send(msg); });
     scheduleSave();
 }
-function handleRemoteMessage(msg) {
+function handleRemoteMessage(msg, conn) {
+    if (!msg || typeof msg !== 'object') return;
     if (msg.type === 'createElement') {
         localAddElement(msg.data);
     } else if (msg.type === 'moveElement') {
@@ -1513,7 +1514,8 @@ function handleRemoteMessage(msg) {
     } else if (msg.type === 'removeEdge') {
         localRemoveEdge(msg.id);
     } else if (msg.type === 'requestSync') {
-        broadcast({ type: 'syncAll', elements, strokes, edges });
+        // Solo al que lo pidió: un broadcast haría saltar el confirm() a todos.
+        if (conn?.open) conn.send({ type: 'syncAll', elements, strokes, edges });
     } else if (msg.type === 'syncAll') {
         const localHasContent = elements.length > 0 || strokes.length > 0 || edges.length > 0;
         const remoteHasContent = (msg.elements?.length || 0) + (msg.strokes?.length || 0) + (msg.edges?.length || 0) > 0;
